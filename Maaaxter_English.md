@@ -39,3 +39,16 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
 - someone`s got(that winged liner look) down to the/a T
 
   某人的某项技能（上扬的眼线）堪称完美。
+
+
+
+## how do you say ...
+
+* How do you say hi in Chinese?
+* What do you call this in English?
+* What`s the English word for 你好？
+  * How do you say it in English?
+  * What do you call it in English?
+
+> ~~how to say~~ 是错误用法
+
