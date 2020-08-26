@@ -52,3 +52,35 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
 
 > ~~how to say~~ 是错误用法
 
+## You got it
+
+> 中文的意思，对别人表达收到
+
+1. Got it
+
+   其中省略的主语是You，而不是I
+
+   如果是I got it：
+
+   * 我对这件事情有把握，我来做。用例，我来开门
+   * 东西在我这，用例，钥匙在我这
+
+2. Roger  / Copy that
+
+   收到
+
+3. Consider it done！
+
+   收到，放心吧。
+
+4. Sure thing。
+
+   没问题
+
+5. I am on it.
+
+   收到，马上办。
+
+6. Your wish is my command
+
+   关系度比较好的上级，不适合新关系
