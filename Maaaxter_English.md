@@ -8,7 +8,7 @@ YTB的连接[在此](https://www.youtube.com/channel/UCO8GewbsHFFmJn4kLLq1WXQ/vi
 
 
 
-## to a/the T 
+## to a/the T  / 完美
 
 丝毫不差的，非常完美的，可以替代平时说的Perfect
 
@@ -42,7 +42,7 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
 
 
 
-## how do you say ...
+## how do you say ... /这个东西怎么是什么单词
 
 * How do you say hi in Chinese?
 * What do you call this in English?
@@ -52,7 +52,9 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
 
 > ~~how to say~~ 是错误用法
 
-## You got it
+
+
+## You got it /收到
 
 > 中文的意思，对别人表达收到
 
@@ -84,3 +86,79 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
 6. Your wish is my command
 
    关系度比较好的上级，不适合新关系
+
+
+
+## I think的替代
+
+1. I would / I would not ...
+
+   As far as the new project goes,the only thing I would point out is the timing
+
+   对新项目来说，我认为时间是重要因素。
+
+   We really need to take timing into consideration and make sure we finish on time.
+
+   我们需要认真考虑时间因素，确保按时完成。
+
+2. From where I stand / From a (marketing) perspective / From my point of view /The way Isee it
+
+   https://www.youtube.com/watch?v=wUoBI2NvALk&t=1s
+
+## 英文缩写
+
+1. ROFL
+
+   Rolling On the Floor Laughing 笑的在地上打滚
+
+   LOL = Laugh Out Loud 大声笑出来
+
+2. NSFW 
+
+   Not Safe For Work 不适合在工作场合打开
+
+3. ICYMI 
+
+   In Case You Missed It 以防你没听/看见
+
+4. TFW 
+
+   That Feeling When 某事发生的感受
+
+   TMW = That Moment When 某事发生时的那种情况
+
+5. HBU 
+
+   How aBout You？你呢？/你怎么看？
+
+   WBU = What about you
+
+6. TIL 
+
+   Today I Learned
+
+7. IKR 
+
+   I know，right？ 是呀，肯定表达。
+
+8. IDGAF
+
+   I Don`t Give A Fuxk. 我才不在乎。
+
+   DILIGAS = Do I Look Like I Give A Shxt? 我看起来像在乎的样子吗？
+
+9. IMO
+
+   In My Opinion 我认为
+
+   IMHO = In My Humble Opinion 我个人的观点
+
+10. HMU
+
+    Hit Me Up 给我打电话/通知我
+
+11. BCNU
+
+    Be Seeing You 回见
+
+    B4N = Bye for now 那就这样吧
