@@ -162,3 +162,25 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
     Be Seeing You 回见
 
     B4N = Bye for now 那就这样吧
+
+## I am busy
+
+1. I'm having a productive day!
+
+   我今天效率超高
+
+2. I'm little overload right now.
+
+   现在事情有些多
+
+   I'm expecting things to coll down in a week when i get this part done.
+
+   nip it in the bud
+
+   在某事起始时将其终止
+
+3. I'm working on this project ,and honestly/actually I would like you insight/input on this/support with this.
+
+   我正在忙这个项目，对了，您要是有时间帮我看看这个。
+
+4. I've got a lot to do,but I'm really excited for the result of his project.
