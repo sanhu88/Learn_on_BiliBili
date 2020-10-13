@@ -169,7 +169,7 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
 
    我今天效率超高
 
-2. I'm little overload right now.
+2. **I'm little overload right now.**
 
    现在事情有些多
 
@@ -184,3 +184,49 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
    我正在忙这个项目，对了，您要是有时间帮我看看这个。
 
 4. I've got a lot to do,but I'm really excited for the result of his project.
+
+## Try 、Can`t 、Never 非自信negative回答
+
+1. I am little overloaded right now,Things will cool down by next week. I can get it done by (this date).
+
+   我最近事情比较多，下周会清闲些，这个日期可以忙完。
+
+2. I can not make it this Saturday. I already have plans. Next time. Thanks for inviting me.
+
+   本周六我计划了，咱下次吧，感谢你的邀请。
+
+3. I have got these parts done. I have figured out this steps. Although there`s still one part I am having some problems with. I would love your input on this / I would love for you take a look.
+
+   我已经完成了一部分，但是还是有一部分存在问题，请您帮看下。
+
+4. Is there any tips for beginners? I am scared but I would like to know how to get started / you got started.
+
+   有没有新手指南？我很害怕但是想知道你是怎么开始的？或如何开始这件事。
+
+5. That is an interesting idea. Who is up for a brainstorming Session?
+
+   很有趣的提议，谁要参加我们的头脑风暴？
+
+   代替 This will never work.
+
+## 不打扰，你忙吧的口语
+
+1. I will leave you to it. I gotta go back to work. Let me know how it goes. Keep me  in the loop
+
+   那你继续忙你的事吧，我也要回去工作了。告诉我进展
+
+2. I will let you go. I will let you get back to work.
+
+   我不打扰你了，你继续工作吧
+
+   > Just remember to email me / let me know when you have the form ready.
+   >
+   > 让我知道你完成了表格。
+   >
+   >  
+   >
+   > Keep up the good work. I will let you get back to work
+
+3. **I won`t disturb you any further**. Let me know what happens.
+
+   我就不在继续打扰你了。
