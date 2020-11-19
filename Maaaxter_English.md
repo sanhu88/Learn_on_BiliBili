@@ -230,3 +230,99 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
 3. **I won`t disturb you any further**. Let me know what happens.
 
    我就不在继续打扰你了。
+
+## 商务交流
+
+1. I just want to quickly touch base with you.
+
+   我想和您确认一下（本应收到回复和进度，却没有时）
+
+   后面可以加
+
+   Did you get my email in Jan 1 2020?
+
+   Have you got a chance to go over my initial draft yet?
+
+   请问有时间看下我的初稿了吗？
+
+   Is there any feedback?
+
+   有什么反馈吗？
+
+2. **We will go from there.**
+
+   然后到时候我们再说下一步（言下之意是，打电话会议结束时，那就先这样吧）
+
+   总结时，各自分工+That will be great!+We will go from there.
+
+3. on our end 
+
+   我方，这边，部门，单位等
+
+   Over on our end, we are good to good.我们这边没问题了。
+
+   It is hard to give you an exact answer for now, but we will go over it on our end,and I will get back to you.
+
+   现在很难给出答案，但我门部门会研究一下，然后给您答案。
+
+4. **Let me get back to you on that.**
+
+   我研究下回复您。
+
+   You know what,I need more time to do this.+ 本句
+
+5. The bottom line is.
+
+   最重要的事情 、最终是要
+
+   bottom line 也有 盈亏一览结算线的意思
+
+   Those are all great ideas,but please bear in mind that our bottom line is to **get this off the ground and get the ball rolling**.
+
+   大家的建议都非常好，但是请大家记得我们最终还是要把这个想法落地变成可行的计划，并把这件事做出来。
+
+6. Would it be OK if I do... / Do you mind if I ...
+
+   请问可以不可以做某事
+
+   I was just wondering would it be OK if we go over this one more time. just to double check there is no typos or anything?
+
+   我们可以不可以再过一遍这个，检查一下里面有没有什么笔误。
+
+7. From (an accounting ) perspective/ standpoint,..
+
+   从（会计）这个角度来看
+
+   I see some potential problems with this project.
+
+8. double check
+
+   再检查一遍
+
+   Excuse me,do you have a moment?I just wanted to double check that we need 3 copies of this,right?
+
+   您有时间吗？就是想再次确认下需要三个复印件是吧？
+
+9. I have got to finish this by Wednesday afternoon,how an about we touch base about that on Thursday?
+
+   我现在的项目必须周三下午前完成，我们可以周四再联络吗？
+
+   Let`s touch base about that on Thursday?
+
+10. Alright,I will leave to it.
+
+    忙你的吧，不打扰了
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
