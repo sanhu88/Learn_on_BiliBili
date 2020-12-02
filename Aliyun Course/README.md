@@ -1,4 +1,4 @@
-# 阿里云开发者 课程中心
+# 	阿里云开发者 课程中心
 
 https://developer.aliyun.com/course/explore
 
@@ -122,8 +122,15 @@ https://docs.docker.com/engine/install/
          "registry-mirrors": ["https://hub-mirror.c.163.com"]
        }
    ~~~
+   
+3. 验证
 
+   ~~~bash
+   ps  -ef|grep docker
+   
+   ~~~
 
+   
 
 ### Hello World
 
@@ -139,4 +146,73 @@ docker run hello-world
 1. CS结构，守护进程运行在主机上
 2. docker比VM更少的抽象层，不需要Hypervisor实现硬件资源虚拟化，直接云想在物理机硬件资源
 3. docker使用宿主机内核，不需要虚拟机系统
+
+### 常用命令
+
+1. 帮助命令
+
+   ~~~bash
+   docker version
+   #版本信息
+   docker info
+   #详细信息，比version更全面
+   docker --help
+   #帮助手册
+   ~~~
+
+2. 镜像命令
+
+   ~~~bash
+   docker images
+   # 列出【本地】镜像
+   
+   docker images -q
+   # 显示images ID, bf756fb1ae65
+   
+   docker images -a
+   # 列出本地所有，包含中间镜像层，镜像千层饼理解
+   
+   docker images --digests
+   # 显示摘要信息 sha256
+   
+   docker images --no-trunc
+    # 显示完整信息
+   ~~~
+   
+   ~~~bash
+   docker search xxx
+    # 查找xxx镜像
+   
+   docker search -s 50 xxx
+   # 大于50 星的
+   
+   docker search --no-trunc xxx
+   # 不省略说明
+   
+   docker search --filter=is-automated=true xxx
+   # 只列出automated build的镜像
+   ~~~
+   
+   ~~~bash
+   docker pull xxx
+   # 下载
+   ~~~
+   
+   ~~~bash
+   docker rmi xxx
+   # 删除某个ID镜像或唯一镜像名
+      
+   docker rmi -f xxx
+   # 删除单个
+      
+   docker rmi -f 镜像名1:TAG 镜像名2:TAG
+   # 删除多个 空格分隔
+      
+   docker rmi -f $(docker images -qa)
+   # 删除本地全部 ，$后面是子命令
+   ~~~
+   
+   > 类似Git 命令，有pull也会有类似的commit push
+
+   
 
