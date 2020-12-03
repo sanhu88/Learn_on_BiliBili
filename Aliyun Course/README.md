@@ -160,7 +160,7 @@ docker run hello-world
    #帮助手册
    ~~~
 
-2. 镜像命令
+2. 镜像镜像命令
 
    ~~~bash
    docker images
@@ -213,6 +213,96 @@ docker run hello-world
    ~~~
    
    > 类似Git 命令，有pull也会有类似的commit push
+   
+3. 容器操作命令
 
+   ~~~bash
+   docker pull centos
+   # 大小约215MB
+   
+   
+   docker run [option] IMAGE [command] [arg...]
+   # option:
+   ## --name ='' 指定名称
+   ## -i 交互式运行
+   ## -t 为容器分配一个虚拟输入终端
+   ## -d 后台运行
+   ## -P 随机映射端口
+   ## -p 指定映射端口（hostPort:containerPort）
+   docker run -it  --name='2020centos' centos
+   [root@c1f11e5b39e6 /]# uname -a
+   
+   
+   docker ps
+   # 列出【正在运行】的container
+   docker ps -a
+   # 列出包括历史运行的容器
+   docker ps -l
+   # 上一个运行的
+   docker ps -n 3
+   # 上三次运行的
+   docker ps -q
+   # 静默模式，只显示编号
+   docker ps--no-trunc
+   # 不截断输出
+   
+   
+   exit  
+   # 退出并停止容器
+   Ctrl+P+Q
+   # 退出，不停止容器
+   docker stop
+   # 停止容器
+   
+docker start ID
+   # 启动容器
+
+   docker restart ID(name 也可以)
+   # 重启容器
+   
+   docker stop
+   # 软性停止，等待关机
+   docker kill 
+   # 强制停止，立马关机
+   
+   docker rm
+   # 删除已停止的容器，rmi是删除镜像，-f强制运行的容器
+   docker rm -f $(docker ps -aq)
+   docker ps -a -q | xargs docker rm
+   # 批量删除所有容器 xargs 可变参数， |管道传递
+   ~~~
+   
+   ~~~bash
+   docker run -d IMAGE
+   # 守护进程启动容器,在ps中显示退出
+   ## 容器的后台运行，必须有有一个前台进程。设计原理
+   ## 将需要运行的程序，以前台的进程的方式进行
+   
+   docker logs -f -t --tail n 容器ID
+   # 查看容器日志
+   ## -t 是显示时间戳 -f动态追加输出   --tail n 最后n条
+   docker run -d centos /bin/sh -c "while true;do echo hello;sleep 2;done"
+   
+   docker top 容器ID
+   # 查看容器内的进程，容器内的top
+   
+   docker inspect 容器ID
+   # 查看容器细节，jaon文件
+   
+   
+   docker attach 容器ID
+   docker exec -it 容器ID ls -l /tmp
+   #进入【运行中】的容器，交互式
+   ## attach 直接进入容器启动命令终端，不会启动新的进程【进入后操作】
+   ## exec 在容器中打开新的终端 直接操作命令行，并且可以启动新的进程，在宿主机就对进行进行操作获得结果
+   ## docker exec -it 容器ID /bin/bash 等同于 docker attach 容器ID
+   
+   docker cp 容器ID:容器路径 主机文件夹
+   docker cp 231d5331e8ea:/tmp/ks-script-xm1o5azb /root
+   #拷贝容器内文件到主机
+   ~~~
+   
+   
+   
    
 
