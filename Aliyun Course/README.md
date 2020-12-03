@@ -178,7 +178,7 @@ docker run hello-world
    docker images --no-trunc
     # 显示完整信息
    ~~~
-   
+
    ~~~bash
    docker search xxx
     # 查找xxx镜像
@@ -192,12 +192,12 @@ docker run hello-world
    docker search --filter=is-automated=true xxx
    # 只列出automated build的镜像
    ~~~
-   
+
    ~~~bash
    docker pull xxx
    # 下载
    ~~~
-   
+
    ~~~bash
    docker rmi xxx
    # 删除某个ID镜像或唯一镜像名
@@ -211,9 +211,9 @@ docker run hello-world
    docker rmi -f $(docker images -qa)
    # 删除本地全部 ，$后面是子命令
    ~~~
-   
+
    > 类似Git 命令，有pull也会有类似的commit push
-   
+
 3. 容器操作命令
 
    ~~~bash
@@ -254,9 +254,9 @@ docker run hello-world
    docker stop
    # 停止容器
    
-docker start ID
+   docker start ID
    # 启动容器
-
+   
    docker restart ID(name 也可以)
    # 重启容器
    
@@ -271,7 +271,7 @@ docker start ID
    docker ps -a -q | xargs docker rm
    # 批量删除所有容器 xargs 可变参数， |管道传递
    ~~~
-   
+
    ~~~bash
    docker run -d IMAGE
    # 守护进程启动容器,在ps中显示退出
@@ -300,9 +300,169 @@ docker start ID
    docker cp 容器ID:容器路径 主机文件夹
    docker cp 231d5331e8ea:/tmp/ks-script-xm1o5azb /root
    #拷贝容器内文件到主机
+   docker cp anaconda-ks.cfg 231d5331e8ea:/tmp
+   #拷贝主机内文件到容器 也可以
+   ~~~
+
+
+
+### 镜像
+
+> tomact 为什么比centos还大？
+>
+> 花卷层结构，鸡蛋同心结构
+
+轻量级可执行的独立软件包，打包了运行环境和基于运行环境的软件。
+
+包括：代码 运行时 库 环境的变量 和 配置文件
+
+#### 联合文件系统 UnionFS
+
+分层轻量级 高性能的文件系统，支持一层层的叠加。UnionFS是Docker镜像的基础。
+
+#### 镜像加载原理
+
+docker镜像由一层一层的文件系统组成。
+
+bootfs 主要包含 bootloader 和kernel，最底层是bootfs
+
+rootfs 在bootfs之上，包含/dev /proc /bin /etc /tmp等标准目录和文件，rootfs就是各种不同的发型版本，centos ubuntu等
+
+不同发型版本的bootf是一样的，直接用宿主机的。rootfs才会有差别，这才镜像的内容，所以体积小。
+
+tomcat 运行需要 1.kernel(用宿主机的) 2.centos或者Debian 3.JDK8 4.tomcat 所以比centos还大
+
+分层结构有点，共享资源。解耦。很多镜像都是基于base，其他镜像可以共享使用。
+
+用镜像生成容器时，只是在镜像的顶部加了一个可写层，这一层也叫容器层。镜像部分还是只读。
+
+#### 镜像的commit
+
+~~~bash
+docker commit
+# 提交容器副本，成为一个新的镜像，自定义镜像
+docker commit -m="提交信息" -a="作者" 容器ID 新的镜像名:[标签]
+
+docker commit -a='xiaojia' -m='without Docs' 5c0f079917dc xiaojia/tomcat:0.02
+# 由容器得到镜像
+~~~
+
+### 容器数据卷
+
+> 保存、持久化容器产生的数据，保存进硬盘。可以比喻成活动移动硬盘
+>
+> 容器间（或宿主机）继承或可以共享数据
+
+~~~bash
+docker cp 
+# 双向拷贝命令
+~~~
+
+#### 在容器内添加数据卷方式
+
+1. ##### 直接命令添加
+
+   ~~~bash
+   docker run -it -v /s宿主机绝对路径目录:/容器内目录 镜像名
+   docker run -it -v /myDateVolume:/dateVC centos
+   
+   docker inspect 容器ID
+   "HostConfig": {
+               "Binds": [
+                   "/myDateVolume:/dateVC"
+               ],
+   ~~~
+
+   容器关闭后，宿主新建文件，容器开机后，也会同步。
+
+   ~~~bash
+   ro
+   docker run -it -v /myDateVolume:/dateVC:ro centos
+   # 容器内的文件只读，不能创建修改文件
+   # touch: cannot touch 'j.txt': Read-only file system
+   
+   "HostConfig": {
+               "Binds": [
+                   "/myDateVolume:/dateVC:ro"
+               ],
+   
+   "Mounts": [
+               {
+                   "Type": "bind",
+                   "Source": "/myDateVolume",
+                   "Destination": "/dateVC",
+                   "Mode": "ro",
+                   "RW": false,
+                   "Propagation": "rprivate"
+               }
+   
+   ~~~
+
+   
+
+2. ##### DockerFile添加容器卷
+
+   > 镜像的源码级别描述文件
+   
+   DockerFile里定义
+   
+   ~~~bash
+   VOLUME["dataVolumeContainer","dataVolumeContainer2","dataVolumeContainer3"]
+   # 只支持容器内，因为不是所有宿主机有指定文件夹，只能先在镜像里先创建指定文件夹
    ~~~
    
+   ~~~bash
+   docker build -f /path/Dockerfile -t xiaojia/centos .
+   # 根据Dockerfile创建镜像
+   # -f 给定Dockerfile 路径，如果在同目录，可以不加此参数
+   # -t 指定名字
+   # 不要忘记最后一个句号	
    
+   [root@localhost mydocker]# docker build -t xiaojia/centos-volume .
+   Sending build context to Docker daemon  2.048kB
+   Step 1/4 : FROM centos
+    ---> 0d120b6ccaa8
+   Step 2/4 : VOLUME ["/dataVolumeContainer1","/dataVolumeContainer2"]
+    ---> Running in 5a1378198810
+   Removing intermediate container 5a1378198810
+    ---> c4ff28e86c95
+   Step 3/4 : CMD echo "finished,----sucess!"
+    ---> Running in d816350a0ca6
+   Removing intermediate container d816350a0ca6
+    ---> 9d1b1ee1464e
+   Step 4/4 : CMD /bin/bash
+    ---> Running in a994defd7352
+   Removing intermediate container a994defd7352
+    ---> f7e8c44bd8ef
+   Successfully built f7e8c44bd8ef
+   Successfully tagged xiaojia/centos-volume:latest
+   ~~~
    
+   ~~~bash
+   docker inspect
+   "Volumes": {
+                   "/dataVolumeContainer1": {},
+                   "/dataVolumeContainer2": {}
+               },
    
+   宿主机对应地址
+   /var/lib/docker/volumes/34d3edd2bf1c7364ebb48937f935c6dd9db96628350f0f5079615afbdfc5bb53/_data
+   ~~~
+   
+   > docker 挂在主机目录出现写入权限禁止时，在挂在目录加如下参数
+   
+   ~~~bash
+   --privileged = true
+   docker run -it -v /myDateVolume:/dateVC:ro centos --privileged = true
+   ~~~
+
+#### 数据卷容器
+
+>活动硬盘上挂在活动硬盘，实现容器间资源传递和共享
+>
+>--volumes-from dc01
+>
+>就是一个文件夹，用户离开，文件不会丢失
+
+
 
