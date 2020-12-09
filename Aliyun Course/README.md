@@ -347,7 +347,7 @@ docker commit -a='xiaojia' -m='without Docs' 5c0f079917dc xiaojia/tomcat:0.02
 # 由容器得到镜像
 ~~~
 
-### 容器数据卷
+### 容器数据卷- Volume
 
 > 保存、持久化容器产生的数据，保存进硬盘。可以比喻成活动移动硬盘
 >
@@ -363,7 +363,7 @@ docker cp
 1. ##### 直接命令添加
 
    ~~~bash
-   docker run -it -v /s宿主机绝对路径目录:/容器内目录 镜像名
+   docker run -it -v /宿主机绝对路径目录:/容器内目录 镜像名
    docker run -it -v /myDateVolume:/dateVC centos
    
    docker inspect 容器ID
@@ -411,6 +411,18 @@ docker cp
    # 只支持容器内，因为不是所有宿主机有指定文件夹，只能先在镜像里先创建指定文件夹
    ~~~
    
+   DockerFile文件
+   
+   ~~~bash
+   #volume test
+   FROM centos
+   VOLUME ["/dataVolumeContainer1","/dataVolumeContainer2"]
+   CMD echo "finished,----sucess!"
+   CMD /bin/bash
+   ~~~
+   
+   
+   
    ~~~bash
    docker build -f /path/Dockerfile -t xiaojia/centos .
    # 根据Dockerfile创建镜像
@@ -446,6 +458,7 @@ docker cp
                },
    
    宿主机对应地址
+   /var/lib/docker/volumes/
    /var/lib/docker/volumes/34d3edd2bf1c7364ebb48937f935c6dd9db96628350f0f5079615afbdfc5bb53/_data
    ~~~
    
@@ -464,5 +477,180 @@ docker cp
 >
 >就是一个文件夹，用户离开，文件不会丢失
 
+### DockerFile 解析
 
+手动编写步骤过程
+
+* 手动编写符合规范的DockerFile文件
+* docker build 生成自定义镜像
+* docker run 运行生成容器
+
+> DockerFile类似shell脚本，一些列命令和参数构成的脚本
+
+#### centos 7 的DockerFile：
+
+~~~bash
+FROM scratch
+# scratch 元镜像
+ADD centos-7-x86_64-docker.tar.xz /
+
+LABEL \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.name="CentOS Base Image" \
+    org.label-schema.vendor="CentOS" \
+    org.label-schema.license="GPLv2" \
+    org.label-schema.build-date="20201113" \
+    org.opencontainers.image.title="CentOS Base Image" \
+    org.opencontainers.image.vendor="CentOS" \
+    org.opencontainers.image.licenses="GPL-2.0-only" \
+    org.opencontainers.image.created="2020-11-13 00:00:00+00:00"
+
+CMD ["/bin/bash"]
+# docker run -it 的时候，最后要不要加/bin/bash
+~~~
+
+#### 解析过程
+
+1. 每条保留指令，必须为大写，且后面至少有一个参数
+2. 从上到下执行
+3. #表示注释
+4. 每条指定创建新的镜像层，并对镜像进行提交
+
+执行流程：
+
+1. 从基础镜像运行一个临时容器 
+
+   #FROM scratch
+
+2. 执行每条指令，并对容器修改
+
+3. 执行类似docker commit 提交每一层的镜像层
+
+4. 最外层提交镜像，运行新容器
+
+5. 执行DockerFile 的下一条命令，直至结束
+
+DockerFile Docker镜像 Docker 容器三者关系：
+
+1. DockerFile - 菜谱(厨师记忆里拥有的) - 面向开发
+2. Docker镜像  - 菜单(餐厅桌子上看到的) - 交付标准
+3. Docker容器 - 菜肴(顾客真正吃的到的) - 涉及部署和运维
+
+#### 保留关键字指令
+
+~~~bash
+FROM
+# 基础镜像，base哪个镜像
+# FROM scratch
+
+MAINTAINER
+# 镜像作者的姓名和邮箱地址
+# MAINTAINER https://github.com/CentOS/sig-cloud-instance-images
+
+RUN
+# 容器构建需要运行的额外命令
+# RUN groupadd -r -g 999 redis && useradd -r -g redis -u 999 redis
+# 添加一个用户组合用户
+
+EXPOSE
+# 端口暴露
+# EXPOSE 6379
+
+WORKDIR
+# 创建容器后，默认终端的工作目录，落脚点。进入容器后pwd看到的
+# WORKDIR /data
+
+ENV
+# 在创建镜像过程中的定义些环境变量，后续可以直接调用环境变量前缀
+# ENV MY_PATH /tmp
+# 后面可以直接使用 WORKDIR $MY_PATH
+
+ADD
+# 拷贝一个文件，自解压缩tar包
+# ADD centos-8-x86_64.tar.xz /
+COPY
+# 拷贝一个文件，不解压缩
+# COPY src dest
+# COPY ['src','dest']
+
+VOLUME
+# 容器数据卷，保存数据和持久化
+
+CMD
+# 运行容器时，指定运行命令
+# 可以有多个CMD命令，但是只有最后一个生效
+# CMD 会被docker run之后的参数替换。比如，run的时候运行cd /tmp
+ENTRYPOINT
+# 运行容器时，指定运行命令
+# 此处定义的命令，会追加到docker run之后，不会被代替
+
+ONBUILD
+# 触发器。如果此镜像可以被继承，父镜像被继承时，父镜像会出发ONBUILD
+~~~
+
+![image-20201208101832875](README.assets/image-20201208101832875.png)
+
+#### FROM
+
+~~~BASH
+FROM scratch
+~~~
+
+99%的镜像都是通过base镜像中，构建和配置产生的。
+
+##### 自定义一个centos镜像
+
+1. 修改落脚点文件夹
+2. vim ifconfig软件添加
+
+##### 编写DockerFile
+
+~~~bash
+FROM centos
+MAINTAINER xiaojia(null@null.com)
+
+ENV MYPATH /usr/local
+WORKDIR $MYPATH
+
+RUN yum -y install epel-release
+# 顺序重要，不然后面htop安装不了
+RUN yum -y install nano
+RUN yum -y install htop
+RUN yum -y install net-tools
+
+EXPOSE 80
+
+CMD echo $MYPATH
+CMD echo "Success..."
+
+CMD ["/bin/bash"]
+~~~
+
+~~~bash
+docker build -t xiaojia-centos:1.0.1 .
+# 共计12步命令需要执行
+~~~
+
+~~~bash
+docker history 镜像ID
+# 列出镜像变更历史
+
+IMAGE               CREATED              CREATED BY                                      SIZE                COMMENT
+c2b592968c95        About a minute ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+7b1676ae51cb        About a minute ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "echo…   0B
+99ec0a0ee35b        About a minute ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "echo…   0B
+54a5dc447531        About a minute ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+f6e47b7e4fa2        About a minute ago   /bin/sh -c yum -y install glances               55MB
+4a0cebf2f281        52 minutes ago       /bin/sh -c yum -y install net-tools             31.6MB
+dfb7b2e00654        53 minutes ago       /bin/sh -c yum -y install htop                  31.1MB
+685710ed5684        53 minutes ago       /bin/sh -c yum -y install nano                  47.4MB
+405a0b869ff2        54 minutes ago       /bin/sh -c yum -y install epel-release          31.5MB
+49c58270b3a7        55 minutes ago       /bin/sh -c #(nop) WORKDIR /usr/local            0B
+e41b25be6ada        55 minutes ago       /bin/sh -c #(nop)  ENV MYPATH=/usr/local        0B
+99929d090d03        55 minutes ago       /bin/sh -c #(nop)  MAINTAINER xiaojia(null@n…   0B
+0d120b6ccaa8        4 months ago         /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>           4 months ago         /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+<missing>           4 months ago         /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB
+
+~~~
 
