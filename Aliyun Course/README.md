@@ -700,5 +700,76 @@ docker build -f Dockerfile03 -t myip .
 docker run -it 317568489eb9 -i
 ~~~
 
+#### ONBUILD
 
+> 被继承的父镜像，被子镜像继承时，触发的父镜像命令
+
+~~~bash
+FROM centos
+RUN yum install -y curl
+ENTRYPOINT ["curl","-s","http://whatismyip.akamai.com/"]
+ONBUILD RUN echo "Father images was inherited."
+~~~
+
+~~~bash
+# docker build -f Dockerfile04 -t father_ip .
+Sending build context to Docker daemon  4.096kB
+Step 1/4 : FROM centos
+ ---> 0d120b6ccaa8
+Step 2/4 : RUN yum install -y curl
+ ---> Using cache
+ ---> 5a0f8bfdedc6
+Step 3/4 : ENTRYPOINT ["curl","-s","http://whatismyip.akamai.com/"]
+ ---> Using cache
+ ---> 317568489eb9
+Step 4/4 : ONBUILD RUN echo "Father images was inherited."
+ ---> Running in 383803a290e3
+Removing intermediate container 383803a290e3
+ ---> 6452e6c6f97c
+Successfully built 6452e6c6f97c
+Successfully tagged father_ip:latest
+~~~
+
+添加一个FROM father_ip的DockerFile
+
+~~~bash
+FROM father_ip
+RUN yum install -y curl
+CMD ["curl","-s","http://whatismyip.akamai.com/"]
+ENTRYPOINT ["curl","-s","http://whatismyip.akamai.com/"]
+~~~
+
+~~~bash
+docker build -f Dockerfile05 -t son_ip .
+Sending build context to Docker daemon   5.12kB
+Step 1/4 : FROM father_ip
+# Executing 1 build trigger
+ ---> Running in a9807632f2b8
+Father images was inherited.
+## 出现在此处
+Removing intermediate container a9807632f2b8
+ ---> 9831a17c6c06
+Step 2/4 : RUN yum install -y curl
+ ---> Running in 3915df17d562
+Last metadata expiration check: 1:32:25 ago on Thu Dec 10 01:31:01 2020.
+Package curl-7.61.1-14.el8.x86_64 is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+Removing intermediate container 3915df17d562
+ ---> 1fbc3efed9f4
+Step 3/4 : CMD ["curl","-s","http://whatismyip.akamai.com/"]
+ ---> Running in 12279aa2db5c
+Removing intermediate container 12279aa2db5c
+ ---> 10888c07f207
+Step 4/4 : ENTRYPOINT ["curl","-s","http://whatismyip.akamai.com/"]
+ ---> Running in 9e50a39e59b0
+Removing intermediate container 9e50a39e59b0
+ ---> 3ad2552285f8
+Successfully built 3ad2552285f8
+Successfully tagged son_ip:latest
+
+~~~
+
+#### ADD / COPY
 
