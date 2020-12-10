@@ -877,3 +877,37 @@ docker exec 2f22e9007087 ls -l /usr/local/apache-tomcat-9.0.41/webapps/test
 ![image-20201210162900381](README.assets/image-20201210162900381.png)
 
 ![image-20201210163014891](README.assets/image-20201210163014891.png)
+
+### Docker 常用安装
+
+> tomcat / mysql / redis
+
+#### mysql
+
+~~~bash
+docker run -dp 13306:3306 --name mysql-test  -v /root/Dockers/mysql/conf:/etc/mysql/conf.d -v /root/Dockers/mysql/logs:/logs -v /root/Dockers/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:5.6 
+~~~
+
+~~~mysql
+# 创建测试数据
+create database db01;
+use db01;
+create table t_book(id int not null primary key,bookName varchar(20));
+insert into t_book value(1,'Docker');
+select * from t_book;
++----+----------+
+| id | bookName |
++----+----------+
+|  1 | Docker   |
++----+----------+
+1 row in set (0.00 sec)
+
+~~~
+
+~~~mysql
+# Docker 外备份数据
+docker exec fc97b066bbc6 sh -c 'exec mysqldump --all-databases -uroot -p"123456"' > /root/Dockers/mysql/backup.sql
+# Warning: Using a password on the command line interface can be insecure.
+# 密码写在命令行里不安全警告
+~~~
+
