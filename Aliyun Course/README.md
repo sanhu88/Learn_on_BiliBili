@@ -911,3 +911,17 @@ docker exec fc97b066bbc6 sh -c 'exec mysqldump --all-databases -uroot -p"123456"
 # 密码写在命令行里不安全警告
 ~~~
 
+#### Redis
+
+~~~bash
+docker pull redis
+docker run -dp 16379:6379 -v /root/Dockers/redis/data:/data -v /root/Dockers/redis/conf/redis.conf:/usr/local/etc/redis.conf redis redis-server /usr/local/etc/redis.conf --appendonly yes
+# --appendonly yes 开启AOF持久化
+~~~
+
+~~~bash
+docker exec -it 78c0c92805a6 redis-cli
+127.0.0.1:6379> set k1 v1
+tail -10 /root/Dockers/redis/data/appendonly.aof
+~~~
+
