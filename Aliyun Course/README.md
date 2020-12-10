@@ -773,3 +773,107 @@ Successfully tagged son_ip:latest
 
 #### ADD / COPY
 
+> ADD 将宿主机指定文件拷贝到镜像，自动处理URL和解压tar包
+>
+> COPY 拷贝文进镜像，不解压缩
+
+~~~bash
+touch c.txt
+# 为了演示ADD / COPY
+~~~
+
+自义定一个tomcat
+
+~~~bash
+FROM centos
+MAINTAINER xiaojia
+
+COPY c.txt /usr/local/cincontainer.txt
+
+ADD apache-tomcat-9.0.41.tar.gz /usr/local
+ADD jdk-8u171-linux-x64.tar.gz /usr/local
+
+RUN yum install -y nano
+
+ENV MYPATH /usr/local
+WORKDIR $MYPATH
+
+ENV JAVA_HOME /usr/local/jdk1.8.0_171
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+
+ENV CATALINA_HOME /usr/local/apache-tomcat-9.0.41
+ENV CATALINA_BASE /usr/local/apache-tomcat-9.0.41
+
+ENV PATH $PATH:$JAVA_HOME/bin:$CATALINA_HOME/bin
+
+EXPOSE 8080
+
+# ENTRYPOINT ["/usr/local/apache-tomcat-9.0.41/bin/startup.sh"]
+# CMD ["/usr/local/apache-tomcat-9.0.41/bin/catalina.sh","run"]
+CMD /usr/local/apache-tomcat-9.0.41/bin/startup.sh && tail -F /usr/local/apache-tomcat-9.0.41/bin/logs/catalina.out
+~~~
+
+~~~bash
+docker build -f Dockerfile -t test_build_tomcat .
+~~~
+
+~~~bash
+docker run -d -p 9080:8080 --name Build-Tomcat -v /root/Newtomcat/DockerFile/test:/usr/local/apache-tomcat-9.0.41/webapps/test -v /root/Newtomcat/DockerFile/tomcatlogs:/usr/local/apache-tomcat-9.0.41/logs --privileged=true test_build_tomcat
+~~~
+
+~~~bash
+# Test 工程发布
+~~~
+
+/DockerFile/test/WEB-INF/web.xml
+
+~~~xml
+<?xml version ="1.0" endcoding ="UTF-8" ?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://java.sun.com/xml/nx/javaee"
+ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+ id="WebApp_ID version="2.5">
+
+<display-name>test webapp</display-name>
+
+</web-app>
+
+~~~
+
+/DockerFile/test/a.jsp
+
+~~~java
+<%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transition//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>Test Webapp</title>
+</head>
+<body>
+----welcome---
+<%="I am in docker tomcat" %>
+<br>
+<br>
+<% System.out.print("======Docker tomcat self");%>
+<!--后台打印到log -->
+</body>
+</html>
+~~~
+
+~~~bash
+docker exec 2f22e9007087 ls -l /usr/local/apache-tomcat-9.0.41/webapps/test
+# 可以看到，由于Volume关联了，容器内也会有文件
+~~~
+
+> 教学视频中，提及以下事项
+>
+> 1. 网页正常运行
+> 2. 修改a.jsp文件，网站也会同步更新
+> 3. 多次访问后，catalina.out 也会记录脚本留给log的日志
+
+#### DockerFile总结
+
+![image-20201210162900381](README.assets/image-20201210162900381.png)
+
+![image-20201210163014891](README.assets/image-20201210163014891.png)
