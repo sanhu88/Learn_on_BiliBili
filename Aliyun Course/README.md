@@ -654,3 +654,51 @@ e41b25be6ada        55 minutes ago       /bin/sh -c #(nop)  ENV MYPATH=/usr/loca
 
 ~~~
 
+#### ENTRYPOINT / CMD
+
+> 指定容器启东市，需要运行的命令
+>
+> CMD 只有最后一个生效，会被docker run中的参数替换
+>
+> ENTRYPOINT 不会被替换，只会添加成新的命令组合
+
+##### CMD
+
+~~~bash
+CMD ["catalina.sh", "run"]
+# tomcat的最后一行
+docker run -itP fc5d5f0e9acf /bin/bash
+# 这样运行，tomcat就不会被启动了
+~~~
+
+~~~bash
+FROM centos
+RUN yum install -y curl
+CMD ["curl","-s","http://whatismyip.akamai.com/"]
+~~~
+
+
+
+##### ENTRYPOINT
+
+~~~BASH
+curl http://whatismyip.akamai.com/ -i
+# 获取http报头，CMD容器执行时会报错
+ docker run -it 63c0a7b87f7a -i
+docker: Error response from daemon: OCI runtime create failed: container_linux.go:349: starting container process caused "exec: \"-i\": executable file not found in $PATH": unknown.
+
+~~~
+
+~~~BASH
+FROM centos
+RUN yum install -y curl
+ENTRYPOINT ["curl","-s","http://whatismyip.akamai.com/"]
+~~~
+
+~~~bash
+docker build -f Dockerfile03 -t myip .
+docker run -it 317568489eb9 -i
+~~~
+
+
+
