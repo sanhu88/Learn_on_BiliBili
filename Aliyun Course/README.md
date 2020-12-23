@@ -277,6 +277,7 @@ docker run hello-world
    # 守护进程启动容器,在ps中显示退出
    ## 容器的后台运行，必须有有一个前台进程。设计原理
    ## 将需要运行的程序，以前台的进程的方式进行
+   ## docker run --rm 运行完删除容器
    
    docker logs -f -t --tail n 容器ID
    # 查看容器日志
@@ -398,6 +399,42 @@ docker cp
    
    ~~~
 
+   komavedio
+
+   ~~~bash
+   docker volume create --name v_webdb_data
+   # 创建一个叫v_webdb_data的卷
+   docker volume ls
+   # 列出所有卷名
+   docker volume inspect v_webdb_data
+   # 查看卷的信息
+   ## {
+           "CreatedAt": "2020-12-23T19:10:16+08:00",
+           "Driver": "local",
+           "Labels": {},
+           "Mountpoint": "/var/lib/docker/volumes/v_webdb_data/_data",
+           "Name": "v_webdb_data",
+           "Options": {},
+           "Scope": "local"
+       }
+   ##
+   docker run  -it --name webdb -v v_webdb_data:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_USER=dbuser -e POSTGRES_PASSWORD=12345678 -d postgres:9.6.20-alpine
+   docker inspect webdb
+   # 查看容器参数
+   "Mounts": [
+               {
+                   "Type": "volume",
+                   "Name": "v_webdb_data",
+                   "Source": "/var/lib/docker/volumes/v_webdb_data/_data",
+                   "Destination": "/var/lib/postgresql/data",
+                   "Driver": "local",
+                   "Mode": "z",
+                   "RW": true,
+                   "Propagation": ""
+               }
+   
+   ~~~
+
    
 
 2. ##### DockerFile添加容器卷
@@ -467,9 +504,10 @@ docker cp
    ~~~bash
    --privileged = true
    docker run -it -v /myDateVolume:/dateVC:ro centos --privileged = true
+   #:ro 代表只读
    ~~~
 
-#### 数据卷容器
+#### 数据卷容器 -v
 
 >活动硬盘上挂在活动硬盘，实现容器间资源传递和共享
 >
@@ -677,7 +715,13 @@ RUN yum install -y curl
 CMD ["curl","-s","http://whatismyip.akamai.com/"]
 ~~~
 
-
+>CMD	里的参数或者命令
+>
+>1. 仅仅执行最后一个CMD
+>
+>2. 如果run 命令行里给了参数，会被覆盖
+>
+>   比如，镜像内是输出 node -v，如果run时候，给定命令是node -help，会运行-help而不是-v。又或者 -e "console.log('hello')"
 
 ##### ENTRYPOINT
 
@@ -925,3 +969,41 @@ docker exec -it 78c0c92805a6 redis-cli
 tail -10 /root/Dockers/redis/data/appendonly.aof
 ~~~
 
+### 本地镜像推送到阿里云
+
+#### 镜像的生成方法
+
+1. DockerFile 然后build
+
+2. 从容器生成
+
+   ~~~bash
+   docker commit -m="提交信息" -a="作者" 容器ID 新的镜像名:[标签]
+   ~~~
+
+#### 推送到阿里云
+
+1. 在阿里云后台添加镜像仓库和命名空间
+
+2. 本地操作，登录到阿里云的Docker 仓库
+
+   ~~~bash
+   sudo docker login --username=s*n***8@qq.com registry.cn-shenzhen.aliyuncs.com
+   
+   sudo docker tag [ImageId] registry.cn-shenzhen.aliyuncs.com/sanhu88/tomcat-with-homepage:[镜像版本号]
+   
+   sudo docker push registry.cn-shenzhen.aliyuncs.com/sanhu88/tomcat-with-homepage:[镜像版本号]
+   ~~~
+
+3. 镜像中心搜索
+
+   ~~~bash
+   https://cr.console.aliyun.com/cn-shenzhen/instances/images
+   # 搜索
+   https://cr.console.aliyun.com/images/cn-shenzhen/sanhu88/tomcat-with-homepage/detail
+   # 前台连接
+   https://cr.console.aliyun.com/cn-shenzhen/instance/repositories
+   # 管理仓库
+   ~~~
+
+   
