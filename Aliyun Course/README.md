@@ -286,6 +286,7 @@ docker run hello-world
    
    docker top 容器ID
    # 查看容器内的进程，容器内的top
+   ## 类似docker exec 容器ID top,而且还不用进入
    
    docker inspect 容器ID
    # 查看容器细节，jaon文件
@@ -419,6 +420,9 @@ docker cp
        }
    ##
    docker run  -it --name webdb -v v_webdb_data:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_USER=dbuser -e POSTGRES_PASSWORD=12345678 -d postgres:9.6.20-alpine
+   
+   psql -h 127.0.0.1 -U dbuser
+   
    docker inspect webdb
    # 查看容器参数
    "Mounts": [
@@ -1006,4 +1010,28 @@ tail -10 /root/Dockers/redis/data/appendonly.aof
    # 管理仓库
    ~~~
 
-   
+
+### pgadmin4
+
+~~~bash
+docker run --name pgadmin4 -p 8086:80 -e 'PGADMIN_DEFAULT_EMAIL=xiaojia@dokcer.com' -e 'PGADMIN_DEFAULT_PASSWORD=12345678' -d dpage/pgadmin4:latest
+~~~
+
+### redis
+
+~~~bash
+docker volume  create --name v_reids_data
+docker volume ls
+# 创建专用数据卷
+docker run --name redis01 -v v_reids_data:/data -p 16379:6379 -d redis:6.0.9-alpine redis-server --appendonly yes --requirepass 12345678
+# 创建容器，镜像名后加上一些命令
+nmap 127.0.0.1
+netstat -nltp
+docker top redis01
+# 验证容器状态
+
+yum install redis-tools
+# 宿主机安装命令行工具
+redis-cli -h 127.0.0.1 -p 16379 -a 12345678
+~~~
+
