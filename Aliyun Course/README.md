@@ -26,6 +26,15 @@ https://developer.aliyun.com/course/1940
 
 举例，Ngnix，MySQL，redis，MongoDB 四个软件，每个软件打包一个个独立集装箱克隆。运维只要安装Docker，使用这个四个集装箱就可以运行代码
 
+> 完整的应用容器化过程主要分为以下几个步骤。
+>
+> - 编写应用代码。
+> - 创建一个 Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用。
+> - 对该 Dockerfile 执行 docker image build 命令。
+> - 等待 Docker 将应用程序构建到 Docker 镜像中。
+
+![容器化的基本过程](README.assets/4-1Z41G51T3502.gif)
+
 ### 作用
 
 虚拟机与容器虚拟化
@@ -177,6 +186,9 @@ docker run hello-world
    
    docker images --no-trunc
     # 显示完整信息
+    
+    docker images --filter dangling=true
+    # 列出tag为<none>的镜像，dangling悬挂
    ~~~
 
    ~~~bash
@@ -1035,3 +1047,402 @@ yum install redis-tools
 redis-cli -h 127.0.0.1 -p 16379 -a 12345678
 ~~~
 
+### Docker Compose
+
+> 组合使用，比如LAMP网站程序，打包完整解决方案。生产环境K8S，开发使用DC
+>
+> 1. 基于Python，甚至可以pip安装
+
+https://docs.docker.com/compose/
+
+https://github.com/docker/compose
+
+https://github.com/docker/compose/releases/
+
+安装docker compose
+
+~~~bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+# 增加可执行权限
+
+docker-compose --version
+# docker-compose version 1.27.4, build 40524192
+
+rm /usr/local/bin/docker-compose
+# 卸载 ，删除文件就完成
+~~~
+
+创建三个文件
+
+1. mian.py
+
+   ~~~python
+   from flask import Flask
+   
+   app = Falsk(__name__)
+   
+   @app.route('/')
+   
+   def hello():
+       return 'Hello From Flask!'
+   
+   
+   if __name__ == "__main__":
+       app.run(host="0.0.0.0", debug=True, port=5000)
+   ~~~
+
+2. requirements.txt
+
+   ~~~bash
+   flash==1.1.2
+   # 不能有空格
+   ~~~
+
+3. Dockerfile
+
+   ~~~bash
+   FROM python:3.10.0a3-alpine3.12
+   
+   ADD . /app
+   # 当前目录打包到容器的app目录下
+   # ADD 将宿主机指定文件拷贝到镜像，自动处理URL和解压tar包
+   WORKDIR /app
+   # 安装python依赖包
+   RUN pip install -r requirements.txt
+   # 启动flask应用服务
+   CMD python main.py
+   ~~~
+
+构建镜像
+
+~~~bash
+docker build -t xiaojia/koma_flask_python:0.1 .
+~~~
+
+运行镜像
+
+~~~bash
+docker run --name flaskserver -d -p 8085:5000 xiaojia/koma_flask_python:0.1
+~~~
+
+整理
+
+~~~
+docker container prune
+docker image prune
+~~~
+
+#### docker-compose.yml
+
+~~~yaml
+version: '3.8'
+# docker compose 版本和docker对应
+services:
+  myflaskweb:
+    build: .
+    ports:
+    - "8085:5000"
+    volumes:
+    - .:/app
+~~~
+
+~~~bash
+docker-compose up
+# 编译后启动，不推荐，检测源文件变动
+docker-compose up --build
+# 每次运行前，都从新编译
+docker-compose up -d --build
+# 守护进程运行
+docker-compose ps
+# 查看状态
+#        Name                    Command            State           Ports
+# ---------------------------------------------------------------------------------
+# compose_myflaskweb_1   /bin/sh -c python main.py   Up      0.0.0.0:8085->5000/tcp
+
+docker-compose run myweb top
+docker-compose top
+# 查看容器输出日志
+
+docker-compose logs -f myweb
+docker logs -f work_myweb_1
+# 查看容器输出日志
+
+docker-compose stop
+# 容器停止
+docker-compose down
+# 容器停止+消除(容器+网络)
+
+docker-compose down --rmi all
+# 容器停止+消除(容器+网络+镜像)
+~~~
+
+#### Flask+Redis
+
+~~~bash
+两个容器：
+web 服务器 ：Flask
+数据库 ： Redis
+~~~
+
+mian.py
+
+~~~python
+from flask import Flask
+from redis import Redis
+
+app = Flask(__name__)
+redis = Redis(host='myredis', port=6379)
+# 因为redis的IP是docker分配，不知道具体IP。填写yml里的服务名
+@app.route('/')
+def hello():
+    redis.incr('hits')
+    # hits 加一
+    return '你好! 我们见过 %s 次面。' % redis.get('hits')
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True, port=5000)
+~~~
+
+requirements.txt
+
+~~~bash
+flask==1.1.2
+redis==3.5.3
+~~~
+
+Dockerfile
+
+~~~bash
+# 描述Web服务器
+FROM python:3.10.0a3-alpine3.12
+
+ADD . /app
+WORKDIR /app
+RUN pip install -r requirements.txt
+CMD python main.py
+~~~
+
+docker-compose.yml
+
+~~~yaml
+version:'3.8'
+services:
+ myweb:
+  build: .
+  # 本地镜像构建，也就是DockerFile生成的
+  ports:
+  - "8088:5000"
+  volumes:
+  - .:/app
+  depends_on:
+  - myredis
+ myredis:
+  image:redis:6.0.9-alpine
+~~~
+
+~~~bash
+netstat -nltp
+# 查看主机端口
+~~~
+
+#### Vue 开发环境
+
+> node.js的docker镜像使用
+>
+> 安装 Vue Cli4
+>
+> 过程：下载官网镜像，安装各种所需工具，然后打包
+
+~~~bash
+sudo docker pull node:12.18.1-buster
+mkdir src
+~~~
+
+Dockerfile
+
+~~~
+FROM node:12.18.1-buster
+ADD ./src /app
+WORKDIR /app
+ENV DEBCONF_NOWARNINGS yes
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+        build-essential -y \
+        curl \
+        nmap \
+        git \
+        nano \
+    && rm -rf /var/lib/apt/lists/*
+RUN npm install -g @vue/cli@4.4.6
+~~~
+
+打包,运行测试
+
+~~~bash
+docker build -t xiaojia/komavuecli4:1.0 .
+
+docker run -it --name komavue -v /root/koma/Vue/src:/app -p 8082:8080 -d xiaojia/komavuecli4:1.0
+~~~
+
+进入容器进行配置
+
+~~~bash
+docker exec -it komavue /bin/bash
+
+root@0787168b0f7b:/app# vue -V
+@vue/cli 4.4.6
+
+ nano ~/.bashrc
+ # 修改添加命令别名
+ ...
+export LS_OPTIONS='--color=auto'
+alias ls='ls $LS_OPTIONS'
+alias ll='ls $LS_OPTIONS -l'
+alias l='ls $LS_OPTIONS -lA'
+...
+exit容器后，重新exec后生效
+
+nano ~/.vuerc
+# 修改vue 默认设置
+...
+{
+  "useTaobaoRegistry": false,
+  "packageManager": "npm"
+}
+...
+~~~
+
+容器内创建Vue工程
+
+~~~bash
+vue create myvueweb
+cd myvueweb
+npm run serve
+~~~
+
+#### MySQL
+
+~~~bash
+docker pull mysql:5.7.33
+# 拉取
+docker run -it --name komasql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.33
+# 运行
+docker exec -it komasql bash -p
+# 进入容器
+mysql -u root -p -h 127.0.0.1
+show databases;
+docker stop komasql
+# 关闭，准备使用docker-compose配置
+
+mkdir initdb
+# 初始化脚本目录
+mkdir datadir
+# 数据库存放目录
+~~~
+
+~~~yaml
+
+version: '3.8'
+services:
+ mysql:
+  build: ./mysql/
+  # 本地镜像构建，也就是DockerFile生成的
+  ports:
+  - "3306:3306"
+  volumes:
+  - ./mysql/initdb:/docker-entrypoint-initdb.d
+  - ./mysql/datadir:/var/lib/mysql
+  image: komapp
+  environment:
+  - MYSQL_ROOT_PASSWORD=123456
+
+~~~
+
+mysql/initdb/init.sql
+
+~~~sql
+create database blogdb;
+create table blogdb.user(id int,name varchar(255));
+insert into blogdb.user values(1,"koma");
+insert into blogdb.user values(2,"xiaoma");
+insert into blogdb.user values(3,"xiaojia");
+~~~
+
+mysql/Dockerfile
+
+~~~yaml
+FROM mysql:5.7.33
+EXPOSE 3306
+ADD ./my.cnf /etc/mysql/conf.d/my/cnf
+CMD ["mysqld"]
+~~~
+
+mysql/my.cnf
+
+~~~bash
+[mysqld]
+character-set-server=utf8
+
+[mysql]
+default-character-set=utf8
+
+[client]
+default-character-set=utf8
+~~~
+
+compose构建镜像
+
+~~~bash
+docker-compose build
+
+docker-compose up -d
+
+~~~
+
+编写node组件和脚本
+
+~~~bash
+npm init -y
+# 初始化一个工程
+npm install mysql --save
+# 安装mysql扩展
+nano main.js
+~~~
+
+~~~js
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+        host:'localhost',
+        user:'root',
+        password:'123456',
+        database:'blogdb'
+});
+connection.connect((err)=>{
+        if (err){
+                console.log('error connecting : '+err.stack);
+                return;
+        }
+        connection.query(
+                'SELECT * FROM user',(error,results)=>{
+                        console.log(results);
+                }
+        );
+});
+
+~~~
+
+~~~bash
+node main.js
+
+[
+  RowDataPacket { id: 1, name: 'koma' },
+  RowDataPacket { id: 2, name: 'xiaoma' },
+  RowDataPacket { id: 3, name: 'xiaojia' }
+]
+
+~~~
+
+> host 中IP，如果node是容器，要在一个bridge里，才能访问[]
