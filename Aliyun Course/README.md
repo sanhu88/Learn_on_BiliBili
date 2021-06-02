@@ -177,6 +177,7 @@ docker run hello-world
    
    docker images -q
    # 显示images ID, bf756fb1ae65
+   docker images -q redis
    
    docker images -a
    # 列出本地所有，包含中间镜像层，镜像千层饼理解
@@ -189,6 +190,16 @@ docker run hello-world
     
     docker images --filter dangling=true
     # 列出tag为<none>的镜像，dangling悬挂
+    docker images -f since=mongo
+    docker images -f before=ubuntu
+    
+   docker image ls --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}"
+   # 显示选定的列
+   docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}"
+   IMAGE ID            REPOSITORY          TAG
+   5f515359c7f8        redis               latest
+   05a60462f8ba        nginx               latest
+   
    ~~~
 
    ~~~bash
@@ -354,11 +365,28 @@ tomcat 运行需要 1.kernel(用宿主机的) 2.centos或者Debian 3.JDK8 4.tomc
 
 ~~~bash
 docker commit
-# 提交容器副本，成为一个新的镜像，自定义镜像
+# 提交容器副本，成为一个新的镜像，自定义镜像 定制镜像
+# 在原有镜像的基础上，再叠加上容器的存储层，并构成新的镜像
 docker commit -m="提交信息" -a="作者" 容器ID 新的镜像名:[标签]
 
 docker commit -a='xiaojia' -m='without Docs' 5c0f079917dc xiaojia/tomcat:0.02
 # 由容器得到镜像
+
+[root@localhost ~]# docker exec -it webserver bash
+root@8c5db1198f84:/# echo '<h1>Hello, Docker!</h1>' > /usr/share/nginx/html/index.html
+root@8c5db1198f84:/# read escape sequence
+[root@localhost ~]# docker diff webserver
+
+docker commit \
+    --author "xiaojia <xiaojia@gmail.com>" \
+    --message "修改了默认网页" \
+    webserver \
+    nginx:v2
+    
+docker history nginx:v2
+# 查看历史关系
+
+## docker commit 意味着所有对镜像的操作都是黑箱操作
 ~~~
 
 ### 容器数据卷- Volume
@@ -590,6 +618,25 @@ DockerFile Docker镜像 Docker 容器三者关系：
 2. Docker镜像  - 菜单(餐厅桌子上看到的) - 交付标准
 3. Docker容器 - 菜肴(顾客真正吃的到的) - 涉及部署和运维
 
+~~~bash
+FROM debian:stretch
+
+RUN set -x; buildDeps='gcc libc6-dev make wget' \
+    && apt-get update \
+    && apt-get install -y $buildDeps \
+    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+    && mkdir -p /usr/src/redis \
+    && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
+    && make -C /usr/src/redis \
+    && make -C /usr/src/redis install \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm redis.tar.gz \
+    && rm -r /usr/src/redis \
+    && apt-get purge -y --auto-remove $buildDeps
+~~~
+
+
+
 #### 保留关键字指令
 
 ~~~bash
@@ -605,6 +652,13 @@ RUN
 # 容器构建需要运行的额外命令
 # RUN groupadd -r -g 999 redis && useradd -r -g redis -u 999 redis
 # 添加一个用户组合用户
+# apt-get install -y --no-install-recommends
+
+##RUN 有两种写法
+# shell 格式
+# RUN echo '<h1>Hello, Docker!</h1>' > /usr/share/nginx/html/index.html
+# exec 格式 : RUN ["可执行文件", "参数1", "参数2"]
+# 
 
 EXPOSE
 # 端口暴露
@@ -626,6 +680,8 @@ COPY
 # 拷贝一个文件，不解压缩
 # COPY src dest
 # COPY ['src','dest']
+
+## 所有的文件复制均使用 COPY 指令，仅在需要自动解压缩的场合使用 ADD。
 
 VOLUME
 # 容器数据卷，保存数据和持久化
