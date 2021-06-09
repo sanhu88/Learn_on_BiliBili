@@ -674,14 +674,22 @@ ENV
 # 后面可以直接使用 WORKDIR $MY_PATH
 
 ADD
-# 拷贝一个文件，自解压缩tar包
+# 拷贝一个文件，自解压缩tar包 gzip, bzip2 以及 xz
 # ADD centos-8-x86_64.tar.xz /
+
+#--chown=<user>:<group
+## ADD --chown=55:mygroup files* /mydir/
+
 COPY
 # 拷贝一个文件，不解压缩
 # COPY src dest
 # COPY ['src','dest']
 
 ## 所有的文件复制均使用 COPY 指令，仅在需要自动解压缩的场合使用 ADD。
+
+# --chown=<user>:<group> 改变文件的所属用户及所属组
+# COPY --chown=55:mygroup files* /mydir/
+## 使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等
 
 VOLUME
 # 容器数据卷，保存数据和持久化
@@ -766,7 +774,7 @@ e41b25be6ada        55 minutes ago       /bin/sh -c #(nop)  ENV MYPATH=/usr/loca
 
 #### ENTRYPOINT / CMD
 
-> 指定容器启东市，需要运行的命令
+> 指定容器启动时，需要运行的命令
 >
 > CMD 只有最后一个生效，会被docker run中的参数替换
 >
@@ -897,6 +905,76 @@ Successfully tagged son_ip:latest
 touch c.txt
 # 为了演示ADD / COPY
 ~~~
+
+#### ENV/ARG 
+
+ENV自定义环境变量，两种写法
+
+~~~bash
+ENV <key> <value>
+ENV <key1>=<value1> <key2>=<value2>...
+
+ENV NODE_VERSION 7.2.0
+ENV VERSION=1.0 DEBUG=on \
+    NAME="Happy Feet"
+~~~
+
+可以快速修改下文中使用的变量值
+
+~~~bash
+ENV NODE_VERSION 7.2.0
+
+RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
+  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
+  && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
+  && grep " node-v$NODE_VERSION-linux-x64.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
+  && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 \
+  && rm "node-v$NODE_VERSION-linux-x64.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
+  && ln -s /usr/local/bin/node /usr/local/bin/nodejs
+~~~
+
+可以在以下命令中使用
+
+~~~bash
+ADD、COPY、ENV、EXPOSE、FROM、LABEL、USER、WORKDIR、VOLUME、STOPSIGNAL、ONBUILD、RUN
+~~~
+
+ARG 
+
+和ENV 类似，但是只是用一次。如果在 `FROM` 指令之前指定，那么只能用于 `FROM` 指令中
+
+~~~bash
+ARG DOCKER_USERNAME=library
+~~~
+
+#### USER
+
+切换到创建好的用户
+
+~~~bash
+USER <用户名>[:<用户组>]
+~~~
+
+~~~bash
+RUN groupadd -r redis && useradd -r -g redis redis
+USER redis
+RUN [ "redis-server" ]
+~~~
+
+#### HEALTHCHECK 
+
+健康检查
+
+~~~
+HEALTHCHECK [选项] CMD <命令>：设置检查容器健康状况的命令
+HEALTHCHECK NONE：如果基础镜像有健康检查指令，使用这行可以屏蔽掉其健康检查指令
+~~~
+
+~~~
+starting / healthy / unhealthy
+~~~
+
+
 
 自义定一个tomcat
 
