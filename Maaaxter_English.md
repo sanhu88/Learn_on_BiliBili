@@ -315,14 +315,50 @@ Amy ditha-job to-the-T,其中did的第二个d被连音给吞了
 
     
 
-    
+## 我正在做这个
 
-    
+I am still working on it. 不推荐这种说法，因为会给人一种自己的原因造成工作拖延。
 
-    
+1. fine-tuning / polishing up 优化完善细节，大部分已完成。
 
-    
+   - We are done with most of it.
 
-    
+     我们已经完成了大部分。
 
-    
+   - We are just fine-tuning a few details. Then we will be down.
+
+     我们还在完善一些小细节。
+
+   - We are still just polishing up a few final details.
+
+     我们还在持续优化一些最后的细节。
+
+2. close to finish line 离完成不远了
+
+   * We have got the biggest part of the project taken care of.
+
+     最重要的部分已经完成了。
+
+3. After that it will be smooth sailing 后面的就简单了
+
+   It is all downhill from there.
+
+   
+
+   
+
+   
+
+   
+
+   
+
+   
+
+   
+
+   
+
+   
+
+   
