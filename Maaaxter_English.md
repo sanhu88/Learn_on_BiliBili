@@ -343,22 +343,53 @@ I am still working on it. 不推荐这种说法，因为会给人一种自己的
 
    It is all downhill from there.
 
-   
+## 职场套路英语
 
-   
+1. Not bad == Not good
 
-   
+2. Here`s a friendly reminder 
 
-   
+   may you missed the deadline ,please do it immediately 
 
-   
+3. Fluid 液体
 
-   
+   unclear 不确定的 undefined 未定义的
 
-   
+4. The timing for this just is not good right now
 
-   
+   字面是现在还不是时机，实际是不是时机不对，而是点子不好。
 
-   
+5. Business is really slow this year
 
-   
+   今年生意不好-->今年没得加薪
+
+6. I like how you are thinking ...
+
+   方向没错，需要知道更多细节
+
+7. When you got a chance,can you send me this?
+
+   有时间的时候发给我-->尽快立刻发给我
+
+8. we should set some time to meet about this.
+
+   需要安装排一个时间聊这个事情--> 如果聊徐亚另外安排时间，我目前不是很感兴趣，不在意
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
