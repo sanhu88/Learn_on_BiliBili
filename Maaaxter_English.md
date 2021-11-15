@@ -373,9 +373,29 @@ I am still working on it. 不推荐这种说法，因为会给人一种自己的
 
 8. we should set some time to meet about this.
 
-   需要安装排一个时间聊这个事情--> 如果聊徐亚另外安排时间，我目前不是很感兴趣，不在意
+   需要安装排一个时间聊这个事情--> 如果聊需要另外安排时间，我目前不是很感兴趣，不在意
 
+### "这不是我的错"
 
+1. I wasn't aware of that.
+
+   我不知道此事。
+
+   I will definitely keep that in mind next time.
+
+   我下次一定会记住。
+
+2. I was not involved in this part of the project. But please let know the correct way to do this for future reference.
+
+   我没有参与项目的这部分，请告知正确的处理方法，为以后做准备。
+
+3. I did it that way because ...
+
+   我之所以这样做是因为。。。
+
+4. I think there is some confusion about this. Can you talk about this at a team meeting?
+
+   我觉得这里有些误会，我们在下次会议上说下。
 
 
 

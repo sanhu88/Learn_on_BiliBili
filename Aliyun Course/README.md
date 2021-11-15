@@ -827,6 +827,8 @@ docker run -it 317568489eb9 -i
 #### ONBUILD
 
 > 被继承的父镜像，被子镜像继承时，触发的父镜像命令
+>
+> 帮助别人定制自己而准备的。
 
 ~~~bash
 FROM centos
